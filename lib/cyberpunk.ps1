@@ -9,7 +9,7 @@
 $CyberFx  = New-SceneBackdrop
 $CyberSky = New-SceneSky
 $CyberPx  = 1.6
-$script:Cyber = @{ glitch = -1; wait = 150; jx = 0 }
+$script:Cyber = @{ glitch = -1; wait = 150; jx = 0; relic = -1; night = $null; jacked = $null; woke = $false }
 
 # The city's glow along the bottom: magenta and cyan, drifting.
 $script:CyberGlow = @()
@@ -145,6 +145,163 @@ $script:Signs = @(
        b = $SignSide; dx = $SignSide.w; dy = 1 }
 )
 
+# The malfunction, a secret: at 20:77 (21:17, that is), if Clawd is asleep, a
+# storm of glitches, the window flushes red, an error box types out a quote and
+# Clawd, woken up, flickers into the Netrunner - jacked in - waves, comes back and
+# goes to sleep again.
+# A layer of its own above the content, not under it like the backdrop.
+$RelicLen = 110
+$RelicFx = New-SceneBackdrop
+$win.Content.Child.Children.Remove($RelicFx)
+[void]$win.Content.Child.Children.Add($RelicFx)
+$RelicTint = New-SceneShape $RelicFx Rectangle 10 10 '#FFFF003C'
+$script:RelicBars = @()
+foreach ($hex in @('#99FF003C', '#8800F0FF', '#77FF003C', '#6600F0FF', '#66F2FBFF', '#55FCEE0A')) {
+    $script:RelicBars += New-SceneShape $RelicFx Rectangle 10 2 $hex
+}
+$RelicBox = New-Object System.Windows.Controls.Border
+$RelicBox.Background = New-SceneBrush '#EE0C0B16'
+$RelicBox.BorderBrush = New-SceneBrush '#FFFF003C'
+$RelicBox.BorderThickness = 1
+$RelicBox.Padding = New-Object System.Windows.Thickness 8, 5, 8, 7
+$stack = New-Object System.Windows.Controls.StackPanel
+$RelicHead = New-Object System.Windows.Controls.TextBlock
+$RelicHead.FontFamily = 'Consolas'; $RelicHead.FontSize = 9; $RelicHead.FontWeight = 'Bold'
+$RelicHead.Foreground = New-SceneBrush '#FFFF003C'
+$RelicHead.Margin = New-Object System.Windows.Thickness 0, 0, 0, 3
+[void]$stack.Children.Add($RelicHead)
+# The quote three times: red and cyan copies jittering off the white one.
+$quote = New-Object System.Windows.Controls.Grid
+$script:RelicText = @()
+foreach ($l in @(@('#B3FF003C', -1.5), @('#B300F0FF', 1.5), @('#FFF2FBFF', 0))) {
+    $tb = New-Object System.Windows.Controls.TextBlock
+    $tb.FontFamily = 'Consolas'; $tb.FontSize = 12; $tb.FontWeight = 'Bold'; $tb.TextWrapping = 'Wrap'
+    $tb.Foreground = New-SceneBrush $l[0]
+    $tb.RenderTransform = New-Object System.Windows.Media.TranslateTransform $l[1], 0
+    [void]$quote.Children.Add($tb)
+    $script:RelicText += @{ tb = $tb; dx = $l[1] }
+}
+[void]$stack.Children.Add($quote)
+$RelicBox.Child = $stack
+[void]$RelicFx.Children.Add($RelicBox)
+
+# The widget itself goes haywire: numbers jump, captions crumble into junk and the
+# bars twitch; what was shown is kept and put back at the end. Only plain text -
+# a caption made of several runs (a link, a coloured mark) is left alone.
+$RelicJunk = '#%&@$!?/\|<>~^*=+0123456789' + [string][char]0x2591 + [char]0x2592 + [char]0x2593 + [char]0x2588 + [char]0xA4 + [char]0xA7 + [char]0xC6 + [char]0xD8
+$script:RelicSaved = $null
+
+function Get-RelicTexts($el, $list) {
+    if ($el -eq $RelicFx) { return }
+    if ($el -is [System.Windows.Controls.TextBlock]) {
+        $plain = $el.Inlines.Count -eq 0 -or ($el.Inlines.Count -eq 1 -and $el.Inlines.FirstInline -is [System.Windows.Documents.Run])
+        if ($plain -and $el.Text) { [void]$list.Add(@{ tb = $el; text = $el.Text }) }
+        return
+    }
+    if (-not ($el -is [System.Windows.Media.Visual])) { return }
+    for ($i = 0; $i -lt [System.Windows.Media.VisualTreeHelper]::GetChildrenCount($el); $i++) {
+        Get-RelicTexts ([System.Windows.Media.VisualTreeHelper]::GetChild($el, $i)) $list
+    }
+}
+
+function Set-RelicHaywire([double]$p) {
+    if ($p -le 0) {
+        if (-not $script:RelicSaved) { return }
+        foreach ($x in $script:RelicSaved.texts) { $x.tb.Text = $x.text }
+        foreach ($b in $script:RelicSaved.bars) { $b.bar.Width = $b.w }
+        $script:RelicSaved = $null
+        return
+    }
+    if (-not $script:RelicSaved) {
+        $texts = New-Object System.Collections.ArrayList
+        Get-RelicTexts $win.Content $texts
+        $script:RelicSaved = @{ texts = $texts; bars = @(foreach ($b in @($UI.BarSession, $UI.BarWeek, $UI.BarFable)) {
+            if ($b) { @{ bar = $b; w = $b.Width } } }) }
+    }
+    foreach ($x in $script:RelicSaved.texts) {
+        $sb = New-Object System.Text.StringBuilder
+        foreach ($ch in $x.text.ToCharArray()) {
+            if ([char]::IsDigit($ch)) { [void]$sb.Append([char](48 + $script:Rnd.Next(10))) }
+            elseif (-not [char]::IsWhiteSpace($ch) -and $script:Rnd.NextDouble() -lt $p) { [void]$sb.Append($RelicJunk[$script:Rnd.Next($RelicJunk.Length)]) }
+            else { [void]$sb.Append($ch) }
+        }
+        $x.tb.Text = $sb.ToString()
+    }
+    foreach ($b in $script:RelicSaved.bars) {
+        if ($b.w -is [double] -and -not [double]::IsNaN($b.w)) { $b.bar.Width = $BarWidth * $script:Rnd.NextDouble() }
+    }
+}
+
+# Clawd as the Netrunner, or back as himself; $null - not swapped.
+function Set-RelicJack([bool]$on) {
+    $s = $script:Cyber
+    if ($on -eq [bool]$s.jacked) { return }
+    if ($on) {
+        $j = (Get-Skins)['netrunner']
+        if (-not $j) { return }
+        Show-Skin $j
+    } else { Set-Skin -Force }
+    $s.jacked = $on
+}
+
+function Step-Relic([int]$k, [double]$w, [double]$h) {
+    $s = $script:Cyber
+    if ($k -lt 0) {
+        $RelicFx.Visibility = 'Collapsed'
+        Set-RelicJack $false
+        Set-RelicHaywire 0
+        # Back to sleep, unless the mood was set by hand meanwhile.
+        if ($s.woke -and $script:Mz.force -eq 'idle') { $script:Mz.force = $null }
+        $s.woke = $false
+        return
+    }
+    $RelicFx.Visibility = 'Visible'
+    $RelicHead.Text = T 'cyber.relic'
+    $storm = $k -lt 15 -or $k -ge $RelicLen - 12
+    $RelicTint.Width = $w; $RelicTint.Height = $h
+    $RelicTint.Opacity = $(if ($storm) { ($k % 2) * 0.12 } else { 0.07 + 0.04 * [math]::Sin($k / 2.0) })
+    foreach ($r in $script:RelicBars) {
+        if (-not $storm -and $script:Rnd.Next(5) -gt 0) { $r.Visibility = 'Collapsed'; continue }
+        $r.Visibility = 'Visible'
+        $r.Width = $w * (0.15 + 0.8 * $script:Rnd.NextDouble()); $r.Height = 1 + $script:Rnd.Next(5)
+        Set-At $r ($script:Rnd.NextDouble() * ($w - $r.Width)) ($script:Rnd.NextDouble() * $h)
+    }
+    if ($storm) { $s.jx = $(if ($script:Rnd.Next(2) -eq 0) { -3 } else { 3 }) } elseif ($s.glitch -lt 0) { $s.jx = 0 }
+    # Every other tick, stronger in the storms; calm for the last few ticks before the end.
+    if ($k -ge $RelicLen - 4) { Set-RelicHaywire 0 }
+    elseif ($k % 2 -eq 0) { Set-RelicHaywire $(if ($storm) { 0.6 } else { 0.2 }) }
+
+    # The error box: under the sky row, blinking out now and then, the quote typing itself.
+    $RelicBox.Visibility = $(if ($storm -or $k % 17 -eq 0) { 'Collapsed' } else { 'Visible' })
+    $RelicBox.Width = [math]::Max(80, $w - 32)
+    $y = $h * 0.4
+    if ($UI.Sky.Visibility -eq 'Visible' -and $UI.Sky.ActualHeight -gt 0) {
+        $y = $UI.Sky.TranslatePoint((New-Object System.Windows.Point 0, $UI.Sky.ActualHeight), $RelicFx).Y + 8
+    }
+    Set-At $RelicBox 16 ([math]::Round($y))
+    $q = T 'cyber.samurai'
+    $n = [math]::Max(0, [math]::Min($q.Length, [int](($k - 18) * 1.4)))
+    foreach ($l in $script:RelicText) {
+        $l.tb.Text = $q.Substring(0, $n) + $(if ($n -lt $q.Length -and $k % 4 -lt 2) { '_' } else { '' })
+        $l.tb.RenderTransform.X = $(if ($l.dx -and $script:Rnd.Next(4) -eq 0) { $l.dx * (2 + $script:Rnd.Next(3)) } else { $l.dx })
+    }
+
+    # Clawd: woken up by the noise, he climbs out of the sand; the Netrunner flickers
+    # through, then stays for a while and waves.
+    if ($k -eq 12 -and $script:Mz.mood -eq 'sleep' -and -not $script:Mz.force) { $script:Mz.force = 'idle'; $s.woke = $true }
+    $j = $k -ge 20 -and $k -lt $RelicLen - 15 -and ($k -ge 48 -or [math]::Floor($k / 3) % 2 -eq 0)
+    Set-RelicJack $j
+    if ($k -eq 55) {
+        $m = $script:Mz
+        if ($m -and -not $m.act -and $m.mood -ne 'dead' -and $m.cur -ne 'dead' -and -not $m.buried) { Start-MascotAct 'wave' }
+    }
+}
+
+# Switched to another theme or hidden halfway through - it ends, and Clawd is himself.
+$CyberFx.add_IsVisibleChanged({
+    if (-not $CyberFx.IsVisible -and $script:Cyber.relic -ge 0) { $script:Cyber.relic = -1; Step-Relic -1 0 0 }
+})
+
 function Step-Cyberpunk([int]$t) {
     $s = $script:Cyber
     $w = $CyberFx.ActualWidth; $h = $CyberFx.ActualHeight
@@ -185,6 +342,20 @@ function Step-Cyberpunk([int]$t) {
             $s.glitch = -1; $s.wait = 250 + $script:Rnd.Next(450); $s.jx = 0
             foreach ($r in $script:CyberBars) { $r.Visibility = 'Collapsed' }
         }
+    }
+
+    # 20:77 strikes - while Clawd sleeps and the window is on screen, once an evening.
+    if ($s.relic -lt 0 -and $t % 10 -eq 0) {
+        $now = Get-Date
+        if ($now.Hour -eq 21 -and $now.Minute -eq 17 -and $s.night -ne $now.Date -and $script:Mz.mood -eq 'sleep') {
+            $s.night = $now.Date
+            $s.relic = 0
+        }
+    }
+    if ($s.relic -ge 0) {
+        Step-Relic $s.relic $w $h
+        $s.relic++
+        if ($s.relic -ge $RelicLen) { $s.relic = -1; $s.jx = 0; Step-Relic -1 $w $h }
     }
 
     # The sky row.

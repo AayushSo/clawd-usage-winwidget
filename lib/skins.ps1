@@ -88,6 +88,11 @@ function Set-Skin([switch]$Force) {
     $key = ConvertTo-Json $s -Depth 6 -Compress
     if (-not $Force -and $key -eq $script:SkinKey) { return }
     $script:SkinKey = $key
+    Show-Skin $s
+}
+
+# Puts a skin on Clawd without touching config.json; Set-Skin -Force puts his own back.
+function Show-Skin($s) {
     $script:Skin = $s
     $UI.MascotBody.Fill = New-SkinBrush $s.body
     $UI.MascotEyes.Fill = New-SkinBrush $s.eyes
