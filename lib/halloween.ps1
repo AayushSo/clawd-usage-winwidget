@@ -133,13 +133,17 @@ for ($x = 0; $x -lt 170; $x++) {
 $SpookGround = New-ScenePixels $SpookSky $groundArt $SpookPx @{ d = '#FF2E1F3D'; g = '#FF3F2F52' }
 
 # The scare, a secret: at midnight, and not every night, lightning flashes
-# twice, the lights go out and a huge face with burning eyes and a jagged grin looms
-# out of the dark behind the window, blinks and fades - and Clawd jumps.
+# twice, the lights go out over the whole window and a huge face with burning eyes
+# and a jagged grin looms out of the dark, blinks and fades - and as the lights come
+# back, Clawd jumps. A layer of its own above the content, not under it like the backdrop.
 $ScareLen = 70
-$SpookDark = New-SceneShape $SpookFx Rectangle 10 10 '#FF07040B'
-$SpookFlash = New-SceneShape $SpookFx Rectangle 10 10 '#FFF5F3FF'
+$SpookTop = New-SceneBackdrop
+$win.Content.Child.Children.Remove($SpookTop)
+[void]$win.Content.Child.Children.Add($SpookTop)
+$SpookDark = New-SceneShape $SpookTop Rectangle 10 10 '#FF07040B'
+$SpookFlash = New-SceneShape $SpookTop Rectangle 10 10 '#FFF5F3FF'
 $SpookFace = New-Object System.Windows.Controls.Canvas
-[void]$SpookFx.Children.Add($SpookFace)
+[void]$SpookTop.Children.Add($SpookFace)
 $FacePx = 6
 $FaceArt = @(
     'rrr................rrr',
@@ -168,6 +172,7 @@ foreach ($e in @($SpookDark, $SpookFlash, $SpookFace)) { $e.Opacity = 0; $e.Visi
 
 function Step-Scare([int]$k, [double]$w, [double]$h) {
     $vis = $(if ($k -ge 0) { 'Visible' } else { 'Collapsed' })
+    $SpookTop.Visibility = $vis
     foreach ($e in @($SpookDark, $SpookFlash, $SpookFace)) { $e.Visibility = $vis }
     if ($k -lt 0) { $SpookSky.Opacity = 1; return }
     $SpookDark.Width = $w; $SpookDark.Height = $h
@@ -185,8 +190,8 @@ function Step-Scare([int]$k, [double]$w, [double]$h) {
     $z = 0.9 + 0.15 * $k / $ScareLen
     $SpookFace.RenderTransform = New-Object System.Windows.Media.ScaleTransform $z, $z, ($FaceW / 2), ($FaceH / 2)
     Set-At $SpookFace ([math]::Round(($w - $FaceW) / 2)) ([math]::Round(($h - $FaceH) * 0.4))
-    # Clawd startles - unless he is asleep, lying flat or busy with something already.
-    if ($k -eq 24) {
+    # Clawd startles as the lights come back - unless he is asleep, lying flat or busy already.
+    if ($k -eq $ScareLen - 10) {
         $m = $script:Mz
         if ($m -and -not $m.act -and $m.mood -ne 'dead' -and $m.cur -ne 'dead' -and -not $m.buried) { Start-MascotAct 'jump' }
     }
@@ -287,6 +292,11 @@ function Step-Halloween([int]$t) {
         Set-At $p.c ([math]::Round($sw * $p.fx)) ($floor + $SpookPx - 7 * $SpookPx)
     }
 }
+
+# Switched to another theme or hidden halfway through - the lights come back at once.
+$SpookFx.add_IsVisibleChanged({
+    if (-not $SpookFx.IsVisible -and $script:Spook.scare -ge 0) { $script:Spook.scare = -1; Step-Scare -1 0 0 }
+})
 
 $Scenes.halloween = @{ back = $SpookFx; sky = $SpookSky; step = ${function:Step-Halloween} }
 Sync-Scene
