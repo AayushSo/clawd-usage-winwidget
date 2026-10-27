@@ -7,7 +7,7 @@ are doing.
 
 ![A session starts working, finishes, then waits for you](docs/tour.gif)
 
-**English** · [Русский](README.ru.md)
+**English** · [Русский](README.ru.md) · [Español](README.es.md)
 
 - **Official numbers only.** Percentages come from `claude -p "/usage"` — the
   slash command runs headless, talks to Anthropic with your existing login and
@@ -52,7 +52,9 @@ Settings → Personalization → Taskbar → Other system tray icons → `clawd-
 ## What it shows
 
 - **Big number** — current session (the 5-hour window), straight from the server.
-  The bar goes green → yellow (60%) → red (85%).
+  The bar goes green → yellow (60%) → red (85%). With **Week as the main limit**
+  (Settings → Window, `mainLimit`) it shows the week instead: the tray icon and
+  Clawd's hearts follow it, and the session takes the small line below.
 - **resets in 3h 03m** — time until the window resets, from the exact reset time
   in `/usage`.
 - **WEEK** — weekly limit and time to reset. **FABLE · WEEK** — the separate
@@ -434,11 +436,12 @@ are picked up on the fly, no restart needed.
 
 | key | meaning |
 |---|---|
-| `language` | `en`, `ru` or `fr` (also in Settings) |
+| `language` | `en`, `ru`, `fr`, `pt-BR` or `es` (also in Settings) |
 | `scale` | window scale, 0.6–4.0 (default 1.35; also in Settings) |
 | `opacity` | window opacity, 0–1 |
 | `topmost` | keep the window above all others |
 | `trayResetClock` | tray tooltip shows resets as clock times (`5h: 36% (resets 03:20)`, `7d: 81% (resets tmrw 01:00)`) instead of a countdown |
+| `mainLimit` | the limit shown big - the number, its bar, the tray icon - and followed by Clawd's hearts and mood: `session` (5 hours, default) or `week`; the other one takes the small line (also in Settings → Window) |
 | `warnPercent` / `critPercent` | yellow and red thresholds |
 | `expanded` | details expanded |
 | `showStats` / `showStatus` / `showSessions` / `showAccount` | show the corresponding block |
@@ -500,6 +503,17 @@ version doesn't start. `tools\smoke.ps1` is the pre-release check: it starts a
 copy of the working tree in a sandbox (own folder, TEMP and mutex — the running
 widget is not touched), with the junk that once hung it, and checks an update
 and a rollback through `self-update.ps1`.
+
+To run on fixed data without Claude Code or network probes:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\smoke.ps1 -MockClaude
+powershell -ExecutionPolicy Bypass -File tools\reminders-test.ps1
+powershell -ExecutionPolicy Bypass -File tools\integration-test.ps1
+```
+
+`tools\screenshot.ps1 preview -Lang es -MainLimit week` renders mock data without
+Claude Code; `-MainLimit session` checks the default layout.
 
 `tools/` also holds the recorder that made the GIFs in this README: it boots the
 widget with scripted fake data and renders frames straight from WPF. It needs
