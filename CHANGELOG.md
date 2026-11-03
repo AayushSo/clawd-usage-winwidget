@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.20.0
+
+- Animated Christmas theme: falling snow, a blinking garland, a snowy house with chimney smoke, a snowman, a lit tree and Santa's sleigh. By season now selects Halloween in September and October and Christmas from November through January 14; includes all five interface languages and scene regression checks. ([bc8d469](https://github.com/Enhed/clawd-usage-winwidget/commit/bc8d469d6333a69f60d837844e7d2b191998756d))
+- Added the Antigravity and Codex versions to the ports list. ([749b963](https://github.com/Enhed/clawd-usage-winwidget/commit/749b963bedc448160a8d92cca36b5afe58f5583a))
+
 ## 1.19.0
 
 - Program memory tips now count private working sets instead of counting shared
