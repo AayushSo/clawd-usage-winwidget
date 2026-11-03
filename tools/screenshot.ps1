@@ -14,7 +14,7 @@
     .\tools\screenshot.ps1 history -Out $env:TEMP\h.png -Lang ru
 #>
 param([Parameter(Mandatory)][ValidateSet('preview', 'history', 'claude')][string]$Kind,
-      [string]$Out, [string]$Lang = 'en',
+      [string]$Out, [string]$Lang = 'en', [string]$Theme = 'classic',
       [ValidateSet('session', 'week')][string]$MainLimit = 'session')
 $repo = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 if (-not $Out) { $Out = Join-Path $repo "docs\$(if ($Kind -eq 'claude') { 'claude-settings' } else { $Kind }).png" }
@@ -45,7 +45,7 @@ $script:IsAdmin    = $false
     showSessions = $true; showStatus = $true; showHistory = $isHist; showMascot = $true; showSky = $true
     showAdvisor = $false; showChat = $false; showTasks = $false; clawdSession = $false
     clawdHome = (Join-Path $Root 'home')
-    topmost = $true; left = 40; top = 40; theme = 'default'; skin = 'default'
+    topmost = $true; left = 40; top = 40; theme = $Theme; skin = 'default'
 } | ConvertTo-Json | Out-File $script:ConfigPath -Encoding utf8
 
 # Fake history: the widget sampling every 5 minutes, off at night; the 5-hour
@@ -109,7 +109,7 @@ function claude { throw 'Screenshots must not call Claude Code.' }
 
 foreach ($m in @(
     'config', 'i18n', 'usage', 'version', 'account', 'sessions', 'clawd-session', 'status', 'format', 'theme', 'window',
-    'mascot', 'skins', 'hearts', 'mascot-step', 'weather', 'sky', 'scene', 'space', 'ocean', 'halloween', 'cyberpunk', 'advisor', 'history','reminders', 'lists', 'chat', 'tasks', 'actions', 'panel', 'panel-pages', 'panel-jobs', 'remind-popup', 'settings', 'claude-settings', 'mascot-menu', 'tray',
+    'mascot', 'skins', 'hearts', 'mascot-step', 'weather', 'sky', 'scene', 'space', 'ocean', 'christmas', 'halloween', 'cyberpunk', 'advisor', 'history','reminders', 'lists', 'chat', 'tasks', 'actions', 'panel', 'panel-pages', 'panel-jobs', 'remind-popup', 'settings', 'claude-settings', 'mascot-menu', 'tray',
     'update', 'tray-menu', 'events'
   )) {
     . (Join-Path $script:Root "lib\$m.ps1")
@@ -247,6 +247,11 @@ $shot.add_Tick({
     Update-Widget
     $win.UpdateLayout()
     if ($isHist) { Show-HistPoint ($BarWidth * $hoverAt) }
+    if ((Get-SceneId) -eq 'christmas') {
+        $script:Xmas.sleigh = 18
+        $XmasSleigh.Visibility = 'Visible'
+        Step-Christmas 160
+    }
     Save-Png (Get-Frame $win)
     Stop-Widget
 })

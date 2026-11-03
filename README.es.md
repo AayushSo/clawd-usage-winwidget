@@ -215,7 +215,7 @@ Sin red, el cielo sigue el reloj igualmente. Se desactiva con `showSky`.
 ![Temas](docs/themes.png)
 
 **Temas**: Ajustes → Aspecto: Halloween, Clásico, Medianoche, Moca, Negro OLED,
-Bosque, Espacio, Bajo el mar, Cyberpunk; se cambian al momento. Halloween tiene un
+Bosque, Espacio, Bajo el mar, Navidad, Cyberpunk; se cambian al momento. Halloween tiene un
 fondo de calabacitas, murciélagos y fantasmas, y cobra vida: niebla que se arrastra
 por abajo, fuegos fatuos, murciélagos que cruzan aleteando, un fantasma que pasa
 flotando y una araña que baja de su tela; en la franja del cielo, una gran luna
@@ -233,8 +233,10 @@ cuando, focos que barren el cielo; en la franja del cielo, un skyline con ventan
 que parpadean, una torre con una baliza intermitente, letreros de neón que
 tartamudean ("2077" en una azotea) y coches voladores; viste a Clawd de Rockerboy
 (gafas de aviador y un brazo cromado) o de Netrunner (un visor luminoso) para la
-ocasión. El predeterminado, Según la estación, es Halloween de septiembre a
-noviembre y Clásico el resto del año. `accent` en `config.json` (`"#F472B6"`) pone
+ocasión. Navidad añade nieve, una guirnalda de luces, una casa con humo en la
+chimenea, un muñeco de nieve, un árbol iluminado y el trineo de Papá Noel.
+El predeterminado, Según la estación, es Halloween de septiembre a
+octubre, Navidad de noviembre al 14 de enero y Clásico el resto del año. `accent` en `config.json` (`"#F472B6"`) pone
 tu propio color en los enlaces y la barra semanal por encima del del tema. Los
 colores de nivel de las barras, el cielo y Clawd se quedan como están.
 
@@ -486,7 +488,7 @@ reiniciar.
 | `remoteSessions` | sesiones que se ejecutan en otras máquinas: una lista de URLs o rutas de archivo, ver arriba |
 | `showHistory` | el gráfico de 7 días y los proyectos principales en los detalles (desactivado por defecto) |
 | `showMascot` / `showSky` | Clawd y el cielo detrás de él |
-| `theme` | `auto` (según la estación: `halloween` en otoño, `classic` el resto), `classic`, `midnight`, `mocha`, `oled`, `forest`, `halloween`, `space`, `ocean`, `cyberpunk` (también en los ajustes) |
+| `theme` | `auto` (según la estación: `halloween` en septiembre–octubre, `christmas` de noviembre al 14 de enero, `classic` el resto), `classic`, `midnight`, `mocha`, `oled`, `forest`, `halloween`, `space`, `ocean`, `christmas`, `cyberpunk` (también en los ajustes) |
 | `accent` | tu propio color de acento, `#RRGGBB`, por encima del del tema |
 | `skin` | el disfraz de Clawd: uno incorporado o uno tuyo de `<clawdHome>\skins` (también en los ajustes) |
 | `weatherLat` / `weatherLon` | coordenadas para el tiempo; vacío: según la IP |

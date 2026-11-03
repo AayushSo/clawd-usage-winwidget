@@ -54,6 +54,10 @@ $Themes = [ordered]@{
                   textHi = '#FFF0F9FF'; text = '#FFE0F2FE'; text2 = '#FFCDE6F5'; text3 = '#FFA9C9DC'; text4 = '#FF93B6CB'
                   muted = '#FF86A9BF'; dim = '#FF62849A'; faint = '#FF456679'; off = '#FF2F4C5E'
                   accent = '#FF22D3EE'; accent2 = '#FF67E8F9'; pattern = 'ocean'; scene = 'ocean' }
+    christmas = @{ bg = '#FF231317'; code = '#FF1A0D10'; card = '#FF331B21'; card2 = '#FF42222A'
+                   textHi = '#FFFFF7F5'; text = '#FFF5E8E6'; text2 = '#FFE6D3D0'; text3 = '#FFC8B0AD'; text4 = '#FFB39A97'
+                   muted = '#FFA08A88'; dim = '#FF7E6865'; faint = '#FF5C4A4A'; off = '#FF413236'
+                   accent = '#FF7DD3FC'; accent2 = '#FFBAE6FD'; pattern = 'christmas'; scene = 'christmas' }
     cyberpunk = @{ bg = '#FF0C0B16'; code = '#FF08070F'; card = '#FF17152A'; card2 = '#FF221E3D'
                    textHi = '#FFF2FBFF'; text = '#FFE3EEF5'; text2 = '#FFCBD9E3'; text3 = '#FFA8B8C6'; text4 = '#FF92A3B3'
                    muted = '#FF8494A8'; dim = '#FF65708A'; faint = '#FF474F66'; off = '#FF33364A'
@@ -95,6 +99,18 @@ $Patterns = @{
             @{ x = 30; y = 70; art = @('.w.', 'w.w', '.w.') }
             @{ x = 84; y = 76; art = @('.ww.', 'w..w', 'w..w', '.ww.') }
             @{ x = 94; y = 62; art = @('w') }
+        )
+    }
+    christmas = @{
+        tile = 104; px = 2; opacity = 0.07
+        colors = @{ w = '#FFF8FAFC'; r = '#FFF43F5E'; y = '#FFFCD34D'; b = '#FF7DD3FC' }
+        sprites = @(
+            @{ x = 6; y = 8; art = @('...w...', '.w.w.w.', '..www..', 'wwwwwww', '..www..', '.w.w.w.', '...w...') }
+            @{ x = 60; y = 14; art = @('..y.y..', '...y...', 'rrryrrr', 'rrryrrr', 'yyyyyyy', 'rrryrrr', 'rrryrrr') }
+            @{ x = 32; y = 58; art = @('.rwr.', 'w...w', '....r', '....w', '....r', '....w', '....r') }
+            @{ x = 80; y = 66; art = @('..y..', '.bbb.', 'bwbbb', 'bbbbb', '.bbb.') }
+            @{ x = 10; y = 82; art = @('w') }
+            @{ x = 92; y = 40; art = @('.w.', 'w.w', '.w.') }
         )
     }
     # Scanlines, as on an old monitor.
@@ -198,8 +214,12 @@ function Set-ThemePattern {
     }
 }
 
-# "auto" (the default) follows the season: Halloween in autumn, classic otherwise.
-function Get-SeasonThemeId { if ((Get-Date).Month -in 9..11) { 'halloween' } else { 'classic' } }
+# "auto" follows Halloween in September/October and Christmas through January 14.
+function Get-SeasonThemeId([datetime]$d = (Get-Date)) {
+    if ($d.Month -in 9, 10) { return 'halloween' }
+    if ($d.Month -in 11, 12 -or ($d.Month -eq 1 -and $d.Day -le 14)) { return 'christmas' }
+    return 'classic'
+}
 
 function Get-ThemeId {
     $id = ([string]$script:Cfg.theme).ToLower()
