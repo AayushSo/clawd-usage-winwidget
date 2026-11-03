@@ -622,6 +622,13 @@ macOS, Linux, телефона или строки состояния. Сдел�
   для большинства рабочих столов Linux (GNOME, KDE, XFCE…) на Python + Qt,
   с Clawd, сердечками и небом.
 
+- [agy-usage-winwidget](https://github.com/IberianSoldierPC/agy-usage-winwidget)
+  от [@IberianSoldierPC](https://github.com/IberianSoldierPC) — порт для Windows
+  с квотой `/usage` Google Antigravity, на основе архитектуры и интерфейса этого виджета.
+- [Codex Usage Widget](https://github.com/Enhed/codex-usage-widget)
+  от [@Enhed](https://github.com/Enhed) — мой порт для OpenAI Codex под Windows:
+  лимиты, активность сессий, Clawd, анимированные темы и скины.
+
 ## Лицензия
 
 [MIT](LICENSE)

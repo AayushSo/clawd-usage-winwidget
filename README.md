@@ -550,6 +550,13 @@ status bar. Made a port? Open an issue with a link and it'll be listed here.
   most Linux desktops (GNOME, KDE, XFCE…) in Python + Qt, with Clawd, the hearts
   and the sky.
 
+- [agy-usage-winwidget](https://github.com/IberianSoldierPC/agy-usage-winwidget)
+  by [@IberianSoldierPC](https://github.com/IberianSoldierPC) — a Windows port
+  for Google Antigravity's `/usage` quota, based on this widget's architecture and UI.
+- [Codex Usage Widget](https://github.com/Enhed/codex-usage-widget)
+  by [@Enhed](https://github.com/Enhed) — my Windows port for OpenAI Codex,
+  with quota windows, session activity, Clawd, animated themes and skins.
+
 ## License
 
 [MIT](LICENSE)
