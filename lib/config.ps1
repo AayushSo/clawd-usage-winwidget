@@ -4,6 +4,7 @@ $DefaultConfig = [ordered]@{
     refreshSeconds         = 10
     usageIntervalSeconds   = 60     # how often to fetch official percentages
     versionIntervalSeconds = 3600   # how often to check for a Claude Code update
+    checkWidgetRelease     = $false # also check GitHub for a new release of the widget itself (off in this fork)
     expanded               = $false # whether the details block is expanded
     scale                  = 1.35   # scale of the whole window
     warnPercent            = 60

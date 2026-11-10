@@ -124,7 +124,7 @@ function New-ChangesTooltip {
 # widget's version reads its CHANGELOG.md next to the script.
 $ChangelogPage   = 'https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md'
 $ClawdChangelog  = Join-Path $script:Root 'CHANGELOG.md'
-$ClawdChangelogPage = 'https://github.com/Enhed/clawd-usage-winwidget/blob/main/CHANGELOG.md'
+$ClawdChangelogPage = 'https://github.com/AayushSo/clawd-usage-winwidget/blob/main/CHANGELOG.md'
 
 function Open-ClawdChangelog { Start-Process $ClawdChangelogPage }
 
@@ -156,7 +156,7 @@ function New-ClawdChangesTooltip {
 # Claude Code's version. A new one: the version line in the corner turns yellow,
 # a Windows notification once per version, a click updates the files and restarts.
 
-$ReleaseApi = 'https://api.github.com/repos/Enhed/clawd-usage-winwidget/releases/latest'
+$ReleaseApi = 'https://api.github.com/repos/AayushSo/clawd-usage-winwidget/releases/latest'
 $UpdateStatePath = Join-Path $script:Root 'update-state.json'
 
 # A click on the update leaves a mark in TEMP, outside the widget's folder - that
@@ -180,6 +180,8 @@ $script:ClawdRelTask = $null
 $script:ClawdDl      = $null   # @{ task; zip; dir } - an update being downloaded
 
 function Start-ReleaseProbe {
+    # Off unless checkWidgetRelease is set: no request to GitHub at all.
+    if (-not $script:Cfg.checkWidgetRelease) { $script:ClawdRel = $null; return }
     if ($script:ClawdRelTask -and -not $script:ClawdRelTask.IsCompleted) { return }
     try {
         $wc = New-Object System.Net.WebClient
