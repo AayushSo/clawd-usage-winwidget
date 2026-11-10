@@ -10,7 +10,7 @@ Add-ThemeTo $win -Pattern
 
 $UI = @{}
 foreach ($n in @('BtnSettings','BtnToggle','BtnHide','BtnExit','PctText','PctSign','BarSession',
-                 'LineReset','LineWeek','BarWeek','LineStamp',
+                 'LineReset','LineWeek','BarWeek','LineStamp','PaceMain','PaceSide',
                  'Details','LineDay','LineDay2','LineWeek7','LineWeek72','LineVersion','LineClawdVer',
                  'FableRow','FableBarBg','LineFable','BarFable',
                  'StatusRow','StatusDot','LineStatus','LineStatus2','StatsPanel',

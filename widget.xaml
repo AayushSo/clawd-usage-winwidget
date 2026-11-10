@@ -81,8 +81,14 @@
       </Grid>
 
       <Border Background="#26FFFFFF" CornerRadius="3" Height="6" Margin="0,0,0,7">
-        <Border x:Name="BarSession" HorizontalAlignment="Left" CornerRadius="3"
-                Background="#FF4ADE80" Width="0"/>
+        <Grid>
+          <Border x:Name="BarSession" HorizontalAlignment="Left" CornerRadius="3"
+                  Background="#FF4ADE80" Width="0"/>
+          <!-- Week pace head: how much of the week has passed (shown on whichever bar is the week). -->
+          <Border x:Name="PaceMain" HorizontalAlignment="Left" Width="3" Margin="0,-2,0,-2" CornerRadius="1"
+                  Background="#FFFF2D2D" BorderBrush="#B0000000" BorderThickness="0.5"
+                  Visibility="Collapsed" IsHitTestVisible="False"/>
+        </Grid>
       </Border>
 
       <TextBlock x:Name="LineReset" Text="loading..." FontFamily="Segoe UI" FontSize="11"
@@ -95,8 +101,13 @@
                    Foreground="#FF8B8B94" HorizontalAlignment="Right"/>
       </Grid>
       <Border Background="#26FFFFFF" CornerRadius="2" Height="4" Margin="0,0,0,7">
-        <Border x:Name="BarWeek" HorizontalAlignment="Left" CornerRadius="2"
-                Background="#FF60A5FA" Width="0"/>
+        <Grid>
+          <Border x:Name="BarWeek" HorizontalAlignment="Left" CornerRadius="2"
+                  Background="#FF60A5FA" Width="0"/>
+          <Border x:Name="PaceSide" HorizontalAlignment="Left" Width="3" Margin="0,-2,0,-2" CornerRadius="1"
+                  Background="#FFFF2D2D" BorderBrush="#B0000000" BorderThickness="0.5"
+                  Visibility="Collapsed" IsHitTestVisible="False"/>
+        </Grid>
       </Border>
 
       <Grid x:Name="FableRow" Margin="0,0,0,4">

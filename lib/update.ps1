@@ -182,6 +182,25 @@ function Update-Widget {
         $UI.LineWeek.Text = $wLine
     }
 
+    # --- week pace head ------------------------------------------------------
+    # A red tick on the week's bar at the share of the 7-day window already gone:
+    # it moves left to right at a constant speed and reaches the end at the reset.
+    # Fill left of it - under budget; fill past it - ahead of an even pace.
+    $paceX = $null
+    if ($real -and $real.weekReset) {
+        $frac = 1.0 - ($real.weekReset - (Get-Date)).TotalDays / 7.0
+        if ($frac -ge 0 -and $frac -le 1) { $paceX = $frac * $BarWidth }
+    }
+    foreach ($p in @(@{ ui = $UI.PaceMain; key = $main.key }, @{ ui = $UI.PaceSide; key = $side.key })) {
+        if ($null -ne $paceX -and $p.key -eq 'week') {
+            $x = [math]::Max(0.0, [math]::Min($BarWidth - 3.0, $paceX - 1.5))
+            $p.ui.Margin     = [System.Windows.Thickness]::new($x, -2, 0, -2)
+            $p.ui.Visibility = 'Visible'
+        } else {
+            $p.ui.Visibility = 'Collapsed'
+        }
+    }
+
     # --- Fable: separate weekly limit; hidden if /usage did not report it -------
 
     if ($real -and $null -ne $real.fable) {
