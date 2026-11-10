@@ -72,6 +72,8 @@ function Get-Halves {
 
 function Step-Hearts {
     $m = $script:Mz
+    # (fork) showHearts off: they repeat the main limit. His mood still follows it.
+    if (-not $script:Cfg.showHearts) { $UI.Hearts.Visibility = 'Collapsed'; $m.halves = $null; return }
     $halves = Get-Halves
     if ($null -eq $halves) {
         $UI.Hearts.Visibility = 'Collapsed'

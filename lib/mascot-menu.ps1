@@ -158,7 +158,8 @@ Update-SkyTip
 $mascotTimer = New-Object System.Windows.Threading.DispatcherTimer
 $mascotTimer.Interval = [TimeSpan]::FromMilliseconds(90)
 $mascotTimer.add_Tick({
-    try { Step-Mascot } catch {
+    # (fork) calm Clawd - lib/calm.ps1: a still pose, one frame a second.
+    try { if ($script:Cfg.calmMascot) { Step-MascotCalm } else { Step-Mascot } } catch {
         $mascotTimer.Stop()
         $script:Mz.broken = $true
         try {
@@ -166,6 +167,8 @@ $mascotTimer.add_Tick({
                 Out-File (Join-Path $script:Root 'widget-error.log') -Append -Encoding utf8
         } catch {}
     }
+    # (fork) Calm: the backdrop is redrawn every 30 s (time of day), nothing moves in between.
+    if ($script:Cfg.calmMascot -and ($script:Mz.tick % 30) -ne 1) { return }
     # An animated theme takes the sky row's place (lib\scene.ps1).
     if ($script:Scene.id) { Step-Scene; return }
     if ($UI.Sky.Visibility -ne 'Visible' -or $script:Sky.broken) { return }
