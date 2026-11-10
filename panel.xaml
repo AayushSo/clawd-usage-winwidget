@@ -69,10 +69,12 @@
       <Grid Margin="0,0,0,8">
         <Border Background="#1AFFFFFF" Height="1" VerticalAlignment="Bottom"/>
         <StackPanel Orientation="Horizontal">
+          <TextBlock x:Name="TabToday" Style="{StaticResource Tab}"/>
           <TextBlock x:Name="TabChat" Style="{StaticResource Tab}"/>
           <TextBlock x:Name="TabRemind" Style="{StaticResource Tab}"/>
           <TextBlock x:Name="TabTasks" Style="{StaticResource Tab}"/>
           <TextBlock x:Name="TabActions" Style="{StaticResource Tab}"/>
+          <TextBlock x:Name="TabLinks" Style="{StaticResource Tab}"/>
           <TextBlock x:Name="TabLists" Style="{StaticResource Tab}"/>
         </StackPanel>
       </Grid>
@@ -210,6 +212,34 @@
         <ScrollViewer MaxHeight="200" Margin="0,8,0,0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
           <StackPanel x:Name="ActDone"/>
         </ScrollViewer>
+      </StackPanel>
+
+      <!-- (fork) today: the /pa schedule with now marked, a quick add to /pa's inbox (lib/pa.ps1) -->
+      <StackPanel x:Name="PageToday" Visibility="Collapsed">
+        <TextBlock x:Name="PaHead" FontFamily="Segoe UI" FontSize="9" FontWeight="SemiBold"
+                   Foreground="#FF6B7280" Margin="2,0,0,6" TextWrapping="Wrap"/>
+        <ScrollViewer x:Name="PaScroll" MaxHeight="300" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+          <StackPanel x:Name="PaBlocks"/>
+        </ScrollViewer>
+        <Border Style="{StaticResource FieldBox}" Margin="0,8,0,0">
+          <Grid>
+            <TextBox x:Name="PaAdd" Style="{StaticResource Field}" AcceptsReturn="False" MaxHeight="60"/>
+            <TextBlock x:Name="PaAddHint" Style="{StaticResource Hint}"/>
+          </Grid>
+        </Border>
+        <TextBlock x:Name="PaAddMsg" FontFamily="Segoe UI" FontSize="9.5" Foreground="#FF8B8B94"
+                   Margin="2,3,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
+        <TextBlock x:Name="PaOpen" FontFamily="Segoe UI" FontSize="10" Foreground="#FF60A5FA" Margin="2,7,0,0"
+                   Cursor="Hand" Background="Transparent" HorizontalAlignment="Left"/>
+      </StackPanel>
+
+      <!-- (fork) links: the PA widget's quick links (lib/pa.ps1) -->
+      <StackPanel x:Name="PageLinks" Visibility="Collapsed">
+        <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+          <StackPanel x:Name="PaLinkList"/>
+        </ScrollViewer>
+        <TextBlock x:Name="PaLinkMsg" FontFamily="Segoe UI" FontSize="9.5" Foreground="#FF8B8B94"
+                   Margin="2,3,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
       </StackPanel>
 
       <!-- lists: which list, its items, add -->

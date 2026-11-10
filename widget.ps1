@@ -72,7 +72,7 @@ Remove-Item (Join-Path $env:TEMP 'cuw-*') -Recurse -Force -Confirm:$false -Error
 # relies on the variables and functions of the previous ones.
 foreach ($m in @(
     'config', 'i18n', 'launch', 'usage', 'version', 'account', 'sessions', 'clawd-session', 'status', 'format', 'theme', 'window',
-    'mascot', 'skins', 'hearts', 'mascot-step', 'weather', 'sky', 'scene', 'space', 'ocean', 'christmas', 'halloween', 'cyberpunk', 'advisor', 'history','reminders', 'lists', 'chat', 'tasks', 'actions', 'panel', 'panel-pages', 'panel-jobs', 'remind-popup', 'settings', 'claude-settings', 'mascot-menu', 'tray',
+    'mascot', 'skins', 'hearts', 'mascot-step', 'weather', 'sky', 'scene', 'space', 'ocean', 'christmas', 'halloween', 'cyberpunk', 'advisor', 'history','reminders', 'lists', 'chat', 'tasks', 'actions', 'panel', 'panel-pages', 'panel-jobs', 'pa', 'remind-popup', 'settings', 'claude-settings', 'mascot-menu', 'tray',
     'update', 'tray-menu', 'events'
   )) {
     . (Join-Path $script:Root "lib\$m.ps1")

@@ -515,6 +515,8 @@ function Update-Panel([switch]$Force) {
         'tasks'   { Update-TasksPage }
         'actions' { Update-ActionsPage }
         'lists'  { Update-ListsPage }
+        'today'  { Update-TodayPage -Force:$Force }
+        'links'  { Update-LinksPage -Force:$Force }
         default  { Update-ChatPage -Force:$Force }
     }
 }
@@ -599,6 +601,11 @@ function Update-Badge {
     $UI.TipCount.Visibility = $(if ($count) { 'Visible' } else { 'Collapsed' })
     $UI.TipBadge.SetValue([System.Windows.Documents.TextElement]::ForegroundProperty, (New-Brush $color))
     $UI.TipBadge.ToolTip = $tip
-    $show = $script:Cfg.showChat -or $tips.Count -or $script:RemindDue.Count
+    # (fork) With the chat off, the Today and Links tabs still need the way in: a calendar.
+    if (-not $script:Cfg.showChat -and -not $tips.Count -and -not $script:RemindDue.Count -and
+        ((Test-PanelTab 'today') -or (Test-PanelTab 'links'))) {
+        $UI.TipIcon.Text = [char]0xE787; $UI.TipBadge.ToolTip = 'Today and links'
+    }
+    $show = $script:Cfg.showChat -or $tips.Count -or $script:RemindDue.Count -or (Test-PanelTab 'today') -or (Test-PanelTab 'links')
     $UI.TipBadge.Visibility = $(if ($show) { 'Visible' } else { 'Collapsed' })
 }

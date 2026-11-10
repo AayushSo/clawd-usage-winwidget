@@ -17,7 +17,8 @@ $script:ListNew  = $false    # the add field takes a new list's name
 $script:ListKey  = $null
 
 # Whether a tab is on in Settings; the chat always is.
-$PanelTabKeys = @{ remind = 'showReminders'; tasks = 'showTasks'; actions = 'showActions'; lists = 'showLists' }
+$PanelTabKeys = @{ remind = 'showReminders'; tasks = 'showTasks'; actions = 'showActions'; lists = 'showLists'
+                   today = 'showToday'; links = 'showLinks' }   # (fork) today, links - lib/pa.ps1
 function Test-PanelTab([string]$tab) {
     if (-not $PanelTabKeys.ContainsKey($tab)) { return $true }
     return [bool]$script:Cfg[$PanelTabKeys[$tab]]
@@ -31,6 +32,8 @@ function Set-PanelTab([string]$tab) {
     $UI.PageTasks.Visibility  = $(if ($tab -eq 'tasks')  { 'Visible' } else { 'Collapsed' })
     $UI.PageActions.Visibility = $(if ($tab -eq 'actions') { 'Visible' } else { 'Collapsed' })
     $UI.PageLists.Visibility  = $(if ($tab -eq 'lists')  { 'Visible' } else { 'Collapsed' })
+    $UI.PageToday.Visibility  = $(if ($tab -eq 'today')  { 'Visible' } else { 'Collapsed' })
+    $UI.PageLinks.Visibility  = $(if ($tab -eq 'links')  { 'Visible' } else { 'Collapsed' })
     # Rescan and "new conversation" are about the chat.
     foreach ($b in @($UI.AdvStamp, $UI.AdvRescan, $UI.ChatAuto, $UI.ChatNew)) {
         $b.Visibility = $(if ($tab -eq 'chat') { 'Visible' } else { 'Collapsed' })
@@ -54,8 +57,10 @@ function Update-PanelTabs {
         foreach ($l in (Get-Lists)) { $open += @((Read-List $l).items | Where-Object { -not $_.done }).Count }
         $UI.TabLists.Text = & $count 'tab.lists' $open
     }
-    foreach ($p in @(@($UI.TabChat, 'chat'), @($UI.TabRemind, 'remind'), @($UI.TabTasks, 'tasks'),
-                     @($UI.TabActions, 'actions'), @($UI.TabLists, 'lists'))) {
+    $UI.TabToday.Text = T 'tab.today'
+    $UI.TabLinks.Text = T 'tab.links'
+    foreach ($p in @(@($UI.TabToday, 'today'), @($UI.TabChat, 'chat'), @($UI.TabRemind, 'remind'), @($UI.TabTasks, 'tasks'),
+                     @($UI.TabActions, 'actions'), @($UI.TabLinks, 'links'), @($UI.TabLists, 'lists'))) {
         $p[0].Visibility = $(if (Test-PanelTab $p[1]) { 'Visible' } else { 'Collapsed' })
         $on = ($p[1] -eq $script:PanelTab)
         $p[0].Foreground = New-Brush $(if ($on) { '#FFF4F4F5' } else { '#FF6B7280' })
