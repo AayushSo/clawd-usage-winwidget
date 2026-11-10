@@ -201,6 +201,8 @@ function Update-Widget {
         }
     }
 
+    Update-FocusDot   # (fork) the focus circle, when it is the form in use
+
     # --- Fable: separate weekly limit; hidden if /usage did not report it -------
 
     if ($real -and $null -ne $real.fable) {

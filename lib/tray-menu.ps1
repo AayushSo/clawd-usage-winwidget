@@ -12,9 +12,7 @@ $menu.Items.Add((New-Object System.Windows.Forms.ToolStripSeparator)) | Out-Null
 
 $miToggle = $menu.Items.Add('')
 $TrayItems['menu.toggle'] = $miToggle
-$miToggle.add_Click({
-    if ($win.IsVisible) { $win.Hide() } else { $win.Show(); $win.Activate() }
-})
+$miToggle.add_Click({ Switch-WidgetShown })   # (fork) the widget or its focus circle - lib/focus.ps1
 
 $miRefresh = $menu.Items.Add('')
 $TrayItems['menu.refresh'] = $miRefresh
@@ -38,7 +36,5 @@ $miExit.add_Click({ Stop-Widget })
 $notify.ContextMenuStrip = $menu
 $notify.add_MouseClick({
     param($s, $e)
-    if ($e.Button -eq [System.Windows.Forms.MouseButtons]::Left) {
-        if ($win.IsVisible) { $win.Hide() } else { $win.Show(); $win.Activate() }
-    }
+    if ($e.Button -eq [System.Windows.Forms.MouseButtons]::Left) { Switch-WidgetShown }
 })

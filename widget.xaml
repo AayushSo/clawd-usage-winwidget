@@ -29,6 +29,10 @@
                      Background="Transparent"/>
           <TextBlock x:Name="BtnToggle" Text="&#x25BE;" FontSize="11" Foreground="#FF8B8B94"
                      Margin="0,0,9,0" Cursor="Hand" ToolTip="Details"/>
+          <!-- (fork) focus mode: shrink to the weekly circle (lib/focus.ps1) -->
+          <TextBlock x:Name="BtnFocus" Text="&#x25C9;" FontSize="11" Foreground="#FF8B8B94"
+                     Margin="0,0,9,0" Cursor="Hand" Background="Transparent" VerticalAlignment="Center"
+                     ToolTip="Focus: shrink to the weekly circle"/>
           <TextBlock x:Name="BtnHide" Text="&#x2013;" FontSize="13" Foreground="#FF8B8B94"
                      Margin="0,0,9,0" Cursor="Hand" ToolTip="Minimize to tray"/>
           <TextBlock x:Name="BtnExit" Text="&#x2715;" FontSize="11" Foreground="#FF8B8B94"

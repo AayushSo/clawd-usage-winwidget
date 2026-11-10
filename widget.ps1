@@ -72,7 +72,7 @@ Remove-Item (Join-Path $env:TEMP 'cuw-*') -Recurse -Force -Confirm:$false -Error
 # relies on the variables and functions of the previous ones.
 foreach ($m in @(
     'config', 'i18n', 'launch', 'usage', 'version', 'account', 'sessions', 'clawd-session', 'status', 'format', 'theme', 'window',
-    'mascot', 'skins', 'hearts', 'mascot-step', 'weather', 'sky', 'scene', 'space', 'ocean', 'christmas', 'halloween', 'cyberpunk', 'advisor', 'history','reminders', 'lists', 'chat', 'tasks', 'actions', 'panel', 'panel-pages', 'panel-jobs', 'pa', 'remind-popup', 'settings', 'claude-settings', 'mascot-menu', 'tray',
+    'mascot', 'skins', 'hearts', 'mascot-step', 'weather', 'sky', 'scene', 'space', 'ocean', 'christmas', 'halloween', 'cyberpunk', 'advisor', 'history','reminders', 'lists', 'chat', 'tasks', 'actions', 'panel', 'panel-pages', 'panel-jobs', 'pa', 'focus', 'remind-popup', 'settings', 'claude-settings', 'mascot-menu', 'tray',
     'update', 'tray-menu', 'events'
   )) {
     . (Join-Path $script:Root "lib\$m.ps1")
@@ -91,7 +91,8 @@ if ($script:Cfg.expanded) { Set-Details $true }
     } catch {}
 })
 
-$win.Show()
+# (fork) In focus mode the widget starts as its weekly circle (lib/focus.ps1).
+if ($script:Cfg.focusMode) { Enter-Focus } else { $win.Show() }
 Update-Widget
 # Got as far as the window and the first update: tools/smoke.ps1 waits for this file.
 if ($env:CUW_READY_FILE) { try { [System.IO.File]::WriteAllText($env:CUW_READY_FILE, "$WidgetVersion $PID") } catch {} }

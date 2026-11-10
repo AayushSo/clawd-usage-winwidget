@@ -51,6 +51,7 @@ function Stop-Widget {
     if ($script:LastIconHandle -ne [IntPtr]::Zero) {
         [Win32.IconUtil]::DestroyIcon($script:LastIconHandle) | Out-Null
     }
+    try { $dotWin.Close() } catch {}   # (fork) the focus circle
     $win.Close()
     [System.Windows.Threading.Dispatcher]::CurrentDispatcher.InvokeShutdown()
 }
